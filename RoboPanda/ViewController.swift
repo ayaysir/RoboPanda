@@ -16,11 +16,11 @@ extension float4x4 {
     }
 }
 
-class ViewController: UIViewController, ARSCNViewDelegate {
-    
-    var currentPlanePosition: SCNVector3 = .init()
+class ViewController: UIViewController {
+    var pandaScene: SCNScene?
     let sunNode = SCNNode()
-    var floorNode: SCNNode?
+    var floorNodes: [SCNNode] = []
+    let name: String = "RoboPanda5.usdz"
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -33,11 +33,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
         
-        // // Create a new scene
-        // let scene = SCNScene(named: "RoboPanda1.scn")!
-        // 
-        // // Set the scene to the view
-        // sceneView.scene = scene
+         //you can add node whatever
+        pandaScene = SCNScene(named: name)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,93 +79,61 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     @objc func addNodeToSceneView(withGestureRecognizer recognizer: UIGestureRecognizer) {
         let tapLocation = recognizer.location(in: sceneView)
         // let hitTestResults = sceneView.hitTest(tapLocation, types: .existingPlaneUsingExtent)
-        let hitTestResults = sceneView.raycastQuery(from: tapLocation, allowing: .existingPlaneGeometry, alignment: .horizontal)
+        let raycastResults = sceneView.raycastQuery(from: tapLocation, allowing: .existingPlaneGeometry, alignment: .horizontal)
         
-        // guard let hitTestResult = hitTestResults.first else { return }
-        // let translation = hitTestResult.worldTransform.translation // Float3
+        let hitTestResults = sceneView.hitTest(tapLocation)
+        hitTestResults.forEach { result in
+            print("hitTest:", result.node)
+        }
         
-        let translation = hitTestResults!.direction
+        let translation = raycastResults!.direction
       
         let x = translation.x
         let y = translation.y
         let z = translation.z
         print("translation:", x, y, z   )
         
-        let name: String = "RoboPanda2.usdz" //you can add node whatever
+        
         
         let group = DispatchGroup()
         group.enter()
         DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let self else {
+            guard let self, let pandaScene else {
                 return
             }
             print("This is run on the background queue")
             
-            let pandaScene = SCNScene(named: name)!
-            pandaScene.rootNode.childNodes.enumerated().forEach { (i, node) in
-                for (j, child) in node.childNodes.enumerated() {
-                    print(i, j, child)
-                    print("geometry: \(child.geometry)")
-                    if child.name == "PandaBleat01" {
-                        
-                    }
-                    if !child.childNodes.isEmpty {
-                        for y in child.childNodes {
-                            print("cc:", y)
-                            print("geometry: \(y.geometry)")
-                        }
-                    }
-                }
-            }
+            
             
             // self.sceneView.scene = pandaScene
             print(sceneView.scene)
-            let node = pandaScene.rootNode.childNodes[0]
-            if let floorPosition = floorNode?.position {
-                // node.position = floorNode!.position
-                node.position = SCNVector3(x, y, z)
-            } else {
-                node.position = SCNVector3(x, y, z)
-            }
+            print(pandaScene.rootNode.childNodes.count)
+            let node = {
+                if pandaScene.rootNode.childNodes.isEmpty {
+                    return SCNScene(named: self.name)!.rootNode.childNodes[0]
+                }
+                
+                return pandaScene.rootNode.childNodes[0]
+            }()
             
-            print(node.hasActions)
+            node.position = SCNVector3(x, y, z)
+            node.name = "Panda"
             
             sceneView.scene.rootNode.addChildNode(node)
-            floorNode?.removeFromParentNode()
-            // configureLighting()
             
-            // sceneView.scene.rootNode.addChildNode(<#T##child: SCNNode##SCNNode#>)
+            floorNodes.forEach { floorNode in
+                floorNode.removeFromParentNode()
+            }
             
-            
-            // sceneView.scene.rootNode.childNode(withName: "Group", recursively: true)?.position = currentPlanePosition
-            // pandaScene.rootNode.position = SCNVector3(x, y, z)
-            // pandaScene.rootNode.position = .init(currentPlanePosition.x, y, currentPlanePosition.z)
-            // pandaScene.rootNode.eulerAngles.x = -.pi / 2
-            
-            // if let geometry = pandaScene.rootNode.childNode(withName: "Body", recursively: true)?.geometry {
-            //     print("g")
-            //     // self.sceneView.scene = pandaScene
-            //     var boxNode: SCNNode = SCNNode(geometry: geometry)
-            //     pandaScene.rootNode.position = SCNVector3(x, y, z)
-            //     self.sceneView.scene.rootNode.addChildNode(boxNode)
-            // }
-
-            // if var geom: SCNGeometry = pandaScene.rootNode.geometry {
-            //     
-            //     
-            //     print("Geom is not nil.")
-            //     var boxNode: SCNNode = SCNNode(geometry: geom)
-            //     
-            // } else {
-            //     print("Geom is nil.")
-            //     // Create a new scene
-            //     let scene = SCNScene(named: "RoboPanda1.scn")!
-            //     
-            //     // Set the scene to the view
-            //     self.sceneView.scene = scene
-            // }
-            // 
-            
+            // add the audio player only after adding the node to scene. if we reverse, audio never plays
+            if let audioSource = SCNAudioSource(fileNamed: "PandaBleat01.caf") {
+                audioSource.load()
+                let audioPlayer = SCNAudioPlayer(source: audioSource)
+                audioPlayer.willStartPlayback = {
+                    print("willStart")
+                }
+                node.addAudioPlayer(.init(source: audioSource))
+            }
             
             group.leave()
             
@@ -203,12 +168,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let y = CGFloat(planeAnchor.center.y)
         let z = CGFloat(planeAnchor.center.z)
         planeNode.position = SCNVector3(x, y, z)
-        currentPlanePosition = planeNode.position
         print("planeNode:", x, y, z)
         planeNode.eulerAngles.x = -.pi / 2
         
         // 6
-        floorNode = node
+        floorNodes.append(node)
         node.addChildNode(planeNode)
     }
 
@@ -271,5 +235,28 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
+    }
+}
+
+extension ViewController: ARSCNViewDelegate {
+    
+}
+
+extension ViewController {
+    func printChildNodes(scene: SCNScene) {
+        scene.rootNode.childNodes.enumerated().forEach { (i, node) in
+            for (j, child) in node.childNodes.enumerated() {
+                print(i, j, child)
+                print("geometry: \(child.geometry as Any)")
+                if child.name == "PandaBleat01" {
+                }
+                if !child.childNodes.isEmpty {
+                    for y in child.childNodes {
+                        print("cc:", y)
+                        print("geometry: \(y.geometry as Any)")
+                    }
+                }
+            }
+        }
     }
 }
