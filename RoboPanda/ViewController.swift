@@ -67,7 +67,7 @@ class ViewController: UIViewController {
         sceneView.session.run(configuration)
         
         sceneView.delegate = self
-        sceneView.debugOptions = [.showFeaturePoints]
+        // sceneView.debugOptions = [.showFeaturePoints]
         
         sceneView.scene.lightingEnvironment.contents = .none
         // sceneView.scene.background.contents = .none
@@ -168,38 +168,42 @@ class ViewController: UIViewController {
                         let jumpY = CGFloat.random(in: 0.2...0.7)
                         await node.runAction(.moveBy(x: 0, y: jumpY, z: 0, duration: 0.6))
                         await node.runAction(.moveBy(x: 0, y: -jumpY, z: 0, duration: 0.5))
+                        await node.runAction(.moveBy(x: 0, y: 0, z: 0, duration: 0.1))
                         continue
                     }
                     
-                    // let stepDirection: CGFloat = Bool.random() ? 1 : -1
+                    let prevStepXDir = node.position.x.sign
+                    let prevStepZDir = node.position.z.sign
+                    let prevQuadrant = self.findQuadrantDegree(stepXSign: prevStepXDir, stepZSign: prevStepZDir)
+                    
                     let stepXDir: CGFloat = Bool.random() ? 1 : -1
                     let stepZDir: CGFloat = Bool.random() ? 1 : -1
+                    let afterQuadrant = self.findQuadrantDegree(stepXSign: stepXDir.sign, stepZSign: stepZDir.sign)
+                    print(stepXDir, stepZDir)
+                    
+                    // let degree = self.findShortestDegree(prevQuadrant, afterQuadrant)
+                    
                     let stepX: CGFloat = .random(in: 0.0...0.5) * stepXDir
                     let stepZ: CGFloat = .random(in: 0.0...0.5) * stepZDir
                     
                     let duration: TimeInterval = .random(in: 2.5...6.0)
                     
-                    node.eulerAngles.y = -.pi / 1.3
-                    
-                    let rotateDiv: CGFloat = switch (stepXDir, stepZDir) {
-                    case (-1, 1), (1, -1):
-                        CGFloat.random(in: 3.8...3.9)
-                    case (-1, -1):
-                        CGFloat.random(in: 1.3...1.4)
-                    case (1, 1):
-                        CGFloat.random(in: 1.9...2.0)
-                    default:
-                        1
-                    }
+                    // node.eulerAngles.y = -.pi / 1.3
                     
                     // 회전: 마지막 단계로 이것을 연구
-                    // await node.runAction(.rotateTo(x: 0, y: stepXDir * .pi / rotateDiv, z: 0, duration: 1.7))
-                    node.eulerAngles = .init(0, stepXDir * .pi / rotateDiv, 0)
+                    // degTorad(x): + 방향으로 가면 반시계방향으로 움직임
+                    let rotateY = self.degToRad(self.findQuadrantDegree(stepXSign: stepXDir.sign, stepZSign: stepZDir.sign))
+                    if whileFirst {
+                        node.eulerAngles = .init(node.eulerAngles.x, Float(rotateY), node.eulerAngles.z)
+                    } else {
+                        await node.runAction(.rotateTo(x: 0, y: rotateY, z: 0, duration: .random(in: 0.3...0.4), usesShortestUnitArc: true))
+                    }
+                    
                     
                     // 움직임
-                    var elapsedX = stepX * 5/6
-                    var elapsedZ = stepZ * 5/6
-                    var elapsedDuration = duration * 5/6
+                    let elapsedX = stepX * 5/6
+                    let elapsedZ = stepZ * 5/6
+                    let elapsedDuration = duration * 5/6
                     let stepY = 0.025
                     
                     for i in 0..<5 {
@@ -207,6 +211,7 @@ class ViewController: UIViewController {
                     }
                     await node.runAction(.moveBy(x: stepX - elapsedX, y: -stepY, z: stepZ - elapsedZ, duration: duration - elapsedDuration))
                     
+                    // node.rotation = .init(node.rotation.x, Float(rotateY), node.rotation.z, node.rotation.w)
                     // 부유
                     whileFirst = false
                     
@@ -239,6 +244,43 @@ class ViewController: UIViewController {
     func configureLighting() {
         sceneView.autoenablesDefaultLighting = true
         sceneView.automaticallyUpdatesLighting = true
+    }
+    
+    func radTodeg(_ radian: Double) -> Double {
+        return radian * 180 / .pi
+    }
+    
+    func degToRad(_ degree: Double) -> Double {
+        return degree * .pi / 180
+    }
+    
+    func findQuadrantDegree(stepXSign: FloatingPointSign, stepZSign: FloatingPointSign) -> Double {
+        return switch (stepXSign, stepZSign) {
+        case (.minus, .plus): // 좌하 (4)
+            Double.random(in:315-15...315+15)
+        case (.minus, .minus): // 좌상 (3)
+            Double.random(in:225-15...225+15)
+        case (.plus, .plus): // 우상 (2)
+            Double.random(in:45-15...45+15)
+        case (.plus, .minus): // 우하 (1)
+            Double.random(in:135-15...135+15)
+        }
+    }
+    
+    func findShortestDegree(_ beforeQuadrant: Int, _ afterQuadrant: Int) -> Double {
+        return switch (beforeQuadrant, afterQuadrant) {
+        case (1, 2), (2, 3), (3, 4), (4, 1):
+            // Double.random(in: 30...70) 
+            90
+        case (1, 4), (4, 3), (3, 2), (2, 1):
+            // Double.random(in: (-70.0)...(-30.0)) 
+            -90
+        case (1, 3), (2, 4), (3, 1), (4, 2):
+            Bool.random() ? +1.0 : -1.0 * 180
+            // * Double.random(in: 165...195)
+        default:
+            0
+        }
     }
     
     @IBAction func swtActFloorGuide(_ sender: UISwitch) {

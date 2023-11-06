@@ -115,6 +115,7 @@
 		44A294972AF7DE0700A050AF /* Unused */ = {
 			isa = PBXGroup;
 			children = (
+				44A294812AF696A900A050AF /* 병행은복예제.mp3 */,
 				44A820662AF536B100292552 /* RoboPanda1.usdz */,
 				44DDCAC82AF536FF006800CD /* RoboPanda1.scn */,
 				44DDCACA2AF5428B006800CD /* RoboPanda2.usdz */,
@@ -160,7 +161,6 @@
 				44A820592AF5360000292552 /* Main.storyboard */,
 				44A8205C2AF5360100292552 /* Assets.xcassets */,
 				44A8205E2AF5360100292552 /* LaunchScreen.storyboard */,
-				44A294812AF696A900A050AF /* 병행은복예제.mp3 */,
 			);
 			path = RoboPanda;
 			sourceTree = "<group>";
