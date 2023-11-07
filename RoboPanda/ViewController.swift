@@ -113,17 +113,13 @@ class ViewController: UIViewController {
             guard let self, let pandaScene else {
                 return
             }
-            print("This is run on the background queue")
+            // print("This is run on the background queue")
             
             // self.sceneView.scene = pandaScene
-            print(sceneView.scene)
-            print(pandaScene.rootNode.childNodes.count)
             let node = {
                 if pandaScene.rootNode.childNodes.isEmpty {
-                    print("xxxx")
                     return SCNScene(named: self.randomPandaName)!.rootNode.childNodes[0]
                 }
-                print("yyyy")
                 return pandaScene.rootNode.childNodes[0]
             }()
             
@@ -179,7 +175,6 @@ class ViewController: UIViewController {
                     let stepXDir: CGFloat = Bool.random() ? 1 : -1
                     let stepZDir: CGFloat = Bool.random() ? 1 : -1
                     let afterQuadrant = self.findQuadrantDegree(stepXSign: stepXDir.sign, stepZSign: stepZDir.sign)
-                    print(stepXDir, stepZDir)
                     
                     // let degree = self.findShortestDegree(prevQuadrant, afterQuadrant)
                     
@@ -236,7 +231,7 @@ class ViewController: UIViewController {
         }
         group.notify(queue: .main){
             //Here you know that the node is has been put
-            print("notify")
+            // print("notify")
             
         }
     }
@@ -400,6 +395,7 @@ extension ViewController {
             "Bamboo",
             "Doll",
             "Pan",
+            "BigApple",
         ]
         
         return "Panda+\(fileNameArray.randomElement()!).scn"
