@@ -20,6 +20,13 @@ class ViewController: UIViewController {
     var pandaScene: SCNScene?
     let sunNode = SCNNode()
     var floorNodes: [SCNNode] = []
+    
+    var pandaBamboo: SCNNode?
+    var pandaDoll: SCNNode?
+    var pandaPan: SCNNode?
+    var pandaBigApple: SCNNode?
+    
+    var activityView: UIActivityIndicatorView?
 
     var isShowFloorGuide = true {
         didSet {
@@ -41,9 +48,36 @@ class ViewController: UIViewController {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
+        sceneView.preferredFramesPerSecond = 60
         
          //you can add node whatever
-        pandaScene = SCNScene(named: randomPandaName)
+        
+        
+        pandaScene = SCNScene(named: "Panda+Pan.scn")
+        
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            pandaBamboo = SCNScene(named: "Panda+Bamboo.scn")?.rootNode.childNodes[0]
+            pandaDoll = SCNScene(named: "Panda+Doll.scn")?.rootNode.childNodes[0]
+            pandaPan = pandaScene?.rootNode.childNodes[0]
+            pandaBigApple = SCNScene(named: "Panda+BigApple.scn")?.rootNode.childNodes[0]
+        }
+                
+        print("load completed")
+    }
+    
+    func showActivityIndicator() {
+        activityView = UIActivityIndicatorView(style: .large)
+        activityView?.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.5)
+        activityView?.center = self.sceneView.center
+        self.sceneView.addSubview(activityView!)
+        activityView?.startAnimating()
+    }
+
+    func hideActivityIndicator(){
+        if (activityView != nil){
+            activityView?.stopAnimating()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -105,32 +139,61 @@ class ViewController: UIViewController {
         let x = translation.x
         let y = translation.y
         let z = translation.z
-        print("translation:", x, y, z )
+        // print("translation:", x, y, z )
         
         let group = DispatchGroup()
         group.enter()
         DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let self, let pandaScene else {
+            guard let self else {
                 return
             }
+            
             // print("This is run on the background queue")
             
-            // self.sceneView.scene = pandaScene
-            let node = {
-                if pandaScene.rootNode.childNodes.isEmpty {
-                    return SCNScene(named: self.randomPandaName)!.rootNode.childNodes[0]
-                }
-                return pandaScene.rootNode.childNodes[0]
-            }()
+            // self.sceneView.scene = SCNScene(named: self.randomPandaName)!
             
-            node.position = SCNVector3(x, y, z)
+            // let node = {
+            //     if pandaScene.rootNode.childNodes.isEmpty {
+            //         return SCNScene(named: self.randomPandaName)!.rootNode.childNodes[0]
+            //     }
+            //     return pandaScene.rootNode.childNodes[0]
+            // }()
+            
+            // guard let node = pandas[randomPandaNameWithoutExt] else {
+            //     return
+            // }
+            
+            DispatchQueue.main.async {
+                self.showActivityIndicator()
+                print("load start")
+            }
+            let node = switch randomPandaNameWithoutExt {
+            case "Bamboo":
+                pandaBamboo?.clone()
+            case "Doll":
+                pandaDoll?.clone()
+            case "Pan":
+                pandaPan?.clone()
+            case "BigApple":
+                pandaBigApple?.clone()
+            default:
+                SCNNode()
+            }
+            
+            guard let node else {
+                print("nil")
+                return
+            }
+            print(node)
+            
+            node.position = SceneKit.SCNVector3(x, y, z)
             node.name = "Panda"
             
             sceneView.scene.rootNode.addChildNode(node)
             
-            floorNodes.forEach { floorNode in
-                floorNode.removeFromParentNode()
-            }
+            // floorNodes.forEach { floorNode in
+            //     floorNode.removeFromParentNode()
+            // }
             
             // add the audio player only after adding the node to scene. if we reverse, audio never plays
             node.addAudioPlayer(randomPandaBleatSound)
@@ -168,13 +231,8 @@ class ViewController: UIViewController {
                         continue
                     }
                     
-                    let prevStepXDir = node.position.x.sign
-                    let prevStepZDir = node.position.z.sign
-                    let prevQuadrant = self.findQuadrantDegree(stepXSign: prevStepXDir, stepZSign: prevStepZDir)
-                    
                     let stepXDir: CGFloat = Bool.random() ? 1 : -1
                     let stepZDir: CGFloat = Bool.random() ? 1 : -1
-                    let afterQuadrant = self.findQuadrantDegree(stepXSign: stepXDir.sign, stepZSign: stepZDir.sign)
                     
                     // let degree = self.findShortestDegree(prevQuadrant, afterQuadrant)
                     
@@ -233,6 +291,9 @@ class ViewController: UIViewController {
             //Here you know that the node is has been put
             // print("notify")
             
+            DispatchQueue.main.async {
+                self.hideActivityIndicator()
+            }
         }
     }
     
@@ -305,7 +366,7 @@ extension ViewController: ARSCNViewDelegate {
         let y = CGFloat(planeAnchor.center.y)
         let z = CGFloat(planeAnchor.center.z)
         planeNode.position = SCNVector3(x, y, z)
-        print("planeNode:", x, y, z)
+        // print("planeNode:", x, y, z)
         planeNode.eulerAngles.x = -.pi / 2
         
         // 6
@@ -399,6 +460,17 @@ extension ViewController {
         ]
         
         return "Panda+\(fileNameArray.randomElement()!).scn"
+    }
+    
+    var randomPandaNameWithoutExt: String {
+        let fileNameArray = [
+            "Bamboo",
+            "Doll",
+            "Pan",
+            "BigApple",
+        ]
+        
+        return "\(fileNameArray.randomElement()!)"
     }
     
     func printChildNodes(scene: SCNScene) {
