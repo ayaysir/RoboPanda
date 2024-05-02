@@ -8,7 +8,7 @@
 - https://testflight.apple.com/join/yZ37aWBy
 
 ## 매뉴얼
-![]("RoboPanda.001.png")
+![](RoboPanda.001.png)
 
 ## 스크린샷
-![]("RoboPanda.002.png")
+![](RoboPanda.002.png)
