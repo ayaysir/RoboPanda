@@ -25,6 +25,9 @@
 		44A8205B2AF5360000292552 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44A820592AF5360000292552 /* Main.storyboard */; };
 		44A8205D2AF5360100292552 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44A8205C2AF5360100292552 /* Assets.xcassets */; };
 		44A820602AF5360100292552 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44A8205E2AF5360100292552 /* LaunchScreen.storyboard */; };
+		44A903042BE374340009EE2A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 44A903032BE374340009EE2A /* README.md */; };
+		44A903062BE374EA0009EE2A /* RoboPanda.002.png in Resources */ = {isa = PBXBuildFile; fileRef = 44A903052BE374EA0009EE2A /* RoboPanda.002.png */; };
+		44A903082BE376AC0009EE2A /* RoboPanda.001.png in Resources */ = {isa = PBXBuildFile; fileRef = 44A903072BE376AC0009EE2A /* RoboPanda.001.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,8 +39,6 @@
 		449745902AF7E8B400BDAE18 /* Panda+Pan.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "Panda+Pan.scn"; sourceTree = "<group>"; };
 		449745922AF7E8BC00BDAE18 /* Panda+Doll.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "Panda+Doll.scn"; sourceTree = "<group>"; };
 		449745942AF7E8D000BDAE18 /* Panda+Bamboo.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "Panda+Bamboo.scn"; sourceTree = "<group>"; };
-		44A2947F2AF6942800A050AF /* RoboPanda4.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = RoboPanda4.usdz; sourceTree = "<group>"; };
-		44A294812AF696A900A050AF /* 병행은복예제.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "병행은복예제.mp3"; sourceTree = "<group>"; };
 		44A294852AF69A4D00A050AF /* PandaBleat01.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PandaBleat01.caf; sourceTree = "<group>"; };
 		44A294872AF7B58400A050AF /* PandaBleat02.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PandaBleat02.caf; sourceTree = "<group>"; };
 		44A2948B2AF7D35D00A050AF /* Panda6.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Panda6.mp3; sourceTree = "<group>"; };
@@ -53,10 +54,9 @@
 		44A8205A2AF5360000292552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		44A8205C2AF5360100292552 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		44A8205F2AF5360100292552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		44A820662AF536B100292552 /* RoboPanda1.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = RoboPanda1.usdz; sourceTree = "<group>"; };
-		44DDCAC82AF536FF006800CD /* RoboPanda1.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = RoboPanda1.scn; sourceTree = "<group>"; };
-		44DDCACA2AF5428B006800CD /* RoboPanda2.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = RoboPanda2.usdz; sourceTree = "<group>"; };
-		44DDCACC2AF54292006800CD /* RoboPanda2.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = RoboPanda2.scn; sourceTree = "<group>"; };
+		44A903032BE374340009EE2A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		44A903052BE374EA0009EE2A /* RoboPanda.002.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RoboPanda.002.png; sourceTree = "<group>"; };
+		44A903072BE376AC0009EE2A /* RoboPanda.001.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RoboPanda.001.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,7 +86,6 @@
 			children = (
 				4497457F2AF7DE8A00BDAE18 /* SCN */,
 				44A294982AF7DE2400A050AF /* USDZ */,
-				44A294972AF7DE0700A050AF /* Unused */,
 				44A2948A2AF7D34600A050AF /* Sound */,
 			);
 			path = Resource;
@@ -107,19 +106,6 @@
 			path = Sound;
 			sourceTree = "<group>";
 		};
-		44A294972AF7DE0700A050AF /* Unused */ = {
-			isa = PBXGroup;
-			children = (
-				44A294812AF696A900A050AF /* 병행은복예제.mp3 */,
-				44A820662AF536B100292552 /* RoboPanda1.usdz */,
-				44DDCAC82AF536FF006800CD /* RoboPanda1.scn */,
-				44DDCACA2AF5428B006800CD /* RoboPanda2.usdz */,
-				44DDCACC2AF54292006800CD /* RoboPanda2.scn */,
-				44A2947F2AF6942800A050AF /* RoboPanda4.usdz */,
-			);
-			path = Unused;
-			sourceTree = "<group>";
-		};
 		44A294982AF7DE2400A050AF /* USDZ */ = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +120,9 @@
 		44A820472AF535FF00292552 = {
 			isa = PBXGroup;
 			children = (
+				44A903072BE376AC0009EE2A /* RoboPanda.001.png */,
+				44A903052BE374EA0009EE2A /* RoboPanda.002.png */,
+				44A903032BE374340009EE2A /* README.md */,
 				44A820522AF535FF00292552 /* RoboPanda */,
 				44A820512AF535FF00292552 /* Products */,
 			);
@@ -225,11 +214,14 @@
 				44A294952AF7D35D00A050AF /* Panda5.mp3 in Resources */,
 				44A820562AF535FF00292552 /* art.scnassets in Resources */,
 				44A294912AF7D35D00A050AF /* Panda6.mp3 in Resources */,
+				44A903062BE374EA0009EE2A /* RoboPanda.002.png in Resources */,
 				44A820602AF5360100292552 /* LaunchScreen.storyboard in Resources */,
 				44A294862AF69A4D00A050AF /* PandaBleat01.caf in Resources */,
 				44A294942AF7D35D00A050AF /* Panda7.mp3 in Resources */,
 				449745912AF7E8B400BDAE18 /* Panda+Pan.scn in Resources */,
 				449745932AF7E8BC00BDAE18 /* Panda+Doll.scn in Resources */,
+				44A903082BE376AC0009EE2A /* RoboPanda.001.png in Resources */,
+				44A903042BE374340009EE2A /* README.md in Resources */,
 				445F79632AF94B4C007D4998 /* Panda+BigApple.scn in Resources */,
 				44A294882AF7B58400A050AF /* PandaBleat02.caf in Resources */,
 				44A294962AF7D35D00A050AF /* Panda3.mp3 in Resources */,
